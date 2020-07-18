@@ -77,4 +77,37 @@ const $_GET= (param) => {
         return vars[param] ? vars[param] : null;	
     }
     return vars;
-}
+};
+
+const getCart = () => { 
+    var values = [],
+        keys = Object.keys(localStorage),
+        i = keys.length;
+
+    while ( i-- ) {
+        values.push( localStorage.getItem(keys[i]) );
+    }
+
+    return values;
+};
+
+const removeDuplicates = (array) => {
+    let unique = {};
+    array.forEach(function(i) {
+      if(!unique[i]) {
+        unique[i] = true;
+      }
+    });
+    return Object.keys(unique);
+};
+
+const getTotalOfCart = () => {
+    let allCart= getCart();
+    let total= [];
+    for (let index = 0; index <= allCart.length-1; index++) {
+        let inJson= JSON.parse(allCart[index]);
+        total.push(inJson.total);
+    }
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    return total.reduce(reducer);
+};
