@@ -60,45 +60,72 @@
     </div>
     <div class="container">
         <h2 class="text-center">Mon Panier</h2><br />
-        <div class="row" id="product-div">
+        <div class="row" id="productDiv">
         </div>
-        <div class="text-center" id="total-div"></div>
+        <div class="text-center" id="totalDiv"></div>
     </div>
     <div class="container">
         <br />
-        <div class="d-none">
+        <div class="d-none" id="form">
             <h3>Avant ça nous aurions besoin de quelques informations ;) </h3>
-            <form>
+            <form action="" method="POST">
                 <div class="form-group">
                     <label for="lastName">Nom:</label>
                     <input type="text" id="lastName" placeholder="Votre nom..." class="form-control" autocomplete="off"
                         required>
+                    <small class="text-muted">Obligatoire</small>
                 </div>
                 <div class="form-group">
                     <label for="firstNameme">Prenom:</label>
                     <input type="text" id="firstName" placeholder="Votre prenom..." class="form-control" autocomplete="off"
                         required>
+                    <small class="text-muted">Obligatoire</small>
                 </div>
                 <div class="form-group">
                     <label for="adress">Adresse:</label>
                     <input type="text" id="adress" placeholder="Votre adresse..." class="form-control" autocomplete="off"
                         required>
+                    <small class="text-muted">Obligatoire</small>
                 </div>
                 <div class="form-group">
                     <label for="city">Ville:</label>
                     <input type="text" id="city" placeholder="Votre ville..." class="form-control" autocomplete="off"
                         required>
+                    <small class="text-muted">Obligatoire</small>
                 </div>
                 <div class="form-group">
                     <label for="email">Adresse email:</label>
                     <input type="text" id="email" placeholder="Votre adresse email..." class="form-control"
                         autocomplete="off" required>
+                    <small class="text-muted">Obligatoire</small>
                 </div>
                 <button id="btnSubmit" type="submit" class="btn btn-primary">Confirmer</button>
             </form>
         </div>
     </div>
+    <!--Modal-->
+    <div class="modal fade" id="error" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Erreur</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body text-center">
+              <i class="fas fa-exclamation-circle fa-4x" style="color: red;"></i><br />
+              Votre panier est vide!
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
     <br />
+    <script src="js/classProduct.js"></script>
     <script src="js/function.js"></script>
     <script src="js/cartSecondary.js"></script>
     <script src="js/cartPrimary.js"></script>

@@ -1,54 +1,66 @@
-window.onload= () => {
-    var inJson2;
-    var otherCart= getCart();
-    var type= [];
-    var newType= [];
-    var toSend;
-    var itemsToSend= [];
-    var send= new XMLHttpRequest();
-    document.getElementById('btnSubmit').addEventListener('click', (event)=>{
-        event.preventDefault();
-        for (let a=0; a<= otherCart.length-1; a++){
-            inJson2= JSON.parse(otherCart[a]);
-            type.push(inJson2.type);
-        }
-        newType= removeDuplicates(type);
-        for (let index=0; index<=newType.length-1; index++){
-            for (let z = 0; z <= otherCart.length-1; z++) {
-                inJson2= JSON.parse(otherCart[z]);
-                for (let y=1; y <= parseInt(inJson2.quantity); y++) {
-                    if (newType[index] === inJson2.type) {
-                        itemsToSend.push(inJson2.id);
-                    } else {
 
-                    }
-                }
+let inJson2;
+let cart = getCart();
+let type = [];
+let newType = [];
+let toSend;
+let itemsToSend = [];
+btnSubmit.addEventListener('click', async (event) => {
+    event.preventDefault();
+    let verification= false;
+    let allInput= [firstName, lastName, adress, city, email];
+    for (let input = 0; input <= 4; input++) {
+        if (input == 4) {
+            if (isNotAValidEmail(allInput[input].value)) {    
+                verification = true;
+                allInput[input].className = 'form-control is-invalid';
+            } else {
+                allInput[input].className = 'form-control is-valid';
             }
-            toSend= {
-                contact : {
-                    firstName  : document.getElementById('firstName').value,
-                    lastName   : document.getElementById('lastName').value,
-                    adress     : document.getElementById('adress').value,
-                    city       : document.getElementById('city').value,
-                    email      : document.getElementById('email').value
-                },
-                products   : itemsToSend
-            };
-
-            console.log(toSend);
-
-            console.log(newType[index]);
-            send.onreadystatechange = function() {
-                if (this.readyState == XMLHttpRequest.DONE && this.status == 200) {
-                    var response = JSON.parse(this.responseText);
-                    console.log(response);
-                }
-            };
-            send.open("POST", "http://localhost:3000/api/"+newType[index]+"/order");
-            send.setRequestHeader("Content-Type", "application/json");
-            send.send(JSON.stringify(toSend));
-
-            itemsToSend= [];
+        } else {
+            if (isEmpty(allInput[input].value)) {
+                verification = true;
+                allInput[input].className = 'form-control is-invalid';
+            } else {
+                allInput[input].className = 'form-control is-valid';
+            }
         }
-    });
-};
+        if (getCart().length == 0) {
+            verification = true;
+            $('#error').modal('show');
+            form.className= "d-none";
+        }
+    }
+    if (verification  == false) {
+        console.log(verification);
+        // for (let a in cart) {
+        //     inJson2 = JSON.parse(cart[a]);
+        //     type.push(inJson2.type);
+        // }
+        // newType = removeDuplicates(type);
+        // console.log(newType);
+        // for (let index in newType) {
+        //     for (let z in cart) {
+        //         inJson2 = JSON.parse(cart[z]);
+        //         for (let y = 1; y <= parseInt(inJson2.quantity); y++) {
+        //             if (newType[index] == inJson2.type) {
+        //                 itemsToSend.push(inJson2.id);
+        //             }
+        //         }
+        //     }
+        //     toSend = {
+        //         contact: {
+        //             firstName: firstName.value,
+        //             lastName: lastName.value,
+        //             address: adress.value,
+        //             city: city.value,
+        //             email: email.value
+        //         },
+        //         products: itemsToSend
+        //     };
+        //     console.log(toSend);
+        //     send(toSend, newType[index]);
+        // }
+    }
+        
+});
