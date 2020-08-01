@@ -38,7 +38,16 @@ objProduct.getProductWithId($_GET('id'))
 addToCart.addEventListener('click', function () {
     if (isInt(quantity.value)) {
         if (perso.includes(custom.value)) {
-            let a = localStorage.length;
+            let localStorageArray= getCartIndex();
+            let a;
+            if (localStorageArray.length == 0) {
+                a= 1;
+            } else {
+                localStorageArray= sort(localStorageArray);
+                let until= getLastElement(localStorageArray);
+                console.log(localStorageArray);
+                a= parseInt(until.split('m')[1])+1;
+            }
             objProduct.getProductWithId($_GET('id'))
                 .then(data => {
                     let item = {

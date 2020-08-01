@@ -1,4 +1,3 @@
-
 let inJson2;
 let cart = getCart();
 let type = [];
@@ -31,36 +30,38 @@ btnSubmit.addEventListener('click', async (event) => {
             form.className= "d-none";
         }
     }
-    if (verification  == false) {
-        console.log(verification);
-        // for (let a in cart) {
-        //     inJson2 = JSON.parse(cart[a]);
-        //     type.push(inJson2.type);
-        // }
-        // newType = removeDuplicates(type);
-        // console.log(newType);
-        // for (let index in newType) {
-        //     for (let z in cart) {
-        //         inJson2 = JSON.parse(cart[z]);
-        //         for (let y = 1; y <= parseInt(inJson2.quantity); y++) {
-        //             if (newType[index] == inJson2.type) {
-        //                 itemsToSend.push(inJson2.id);
-        //             }
-        //         }
-        //     }
-        //     toSend = {
-        //         contact: {
-        //             firstName: firstName.value,
-        //             lastName: lastName.value,
-        //             address: adress.value,
-        //             city: city.value,
-        //             email: email.value
-        //         },
-        //         products: itemsToSend
-        //     };
-        //     console.log(toSend);
-        //     send(toSend, newType[index]);
-        // }
-    }
-        
+    if (!verification) {
+        for (let a in cart) {
+            inJson2 = JSON.parse(cart[a]);
+            type.push(inJson2.type);
+        }
+        newType = removeDuplicates(type);
+        //console.log(newType);
+        for (let index in newType) {
+            for (let z in cart) {
+                inJson2 = JSON.parse(cart[z]);
+                for (let y = 1; y <= parseInt(inJson2.quantity); y++) {
+                    if (newType[index] == inJson2.type) {
+                        itemsToSend.push(inJson2.id);
+                    }
+                }
+            }
+            toSend = {
+                contact: {
+                    firstName: firstName.value,
+                    lastName: lastName.value,
+                    address: adress.value,
+                    city: city.value,
+                    email: email.value
+                },
+                products: itemsToSend
+            };
+            var status;
+            index == newType.length-1 ? status= true : status= false;
+            send(toSend, newType[index], status);
+
+            toSend= {};
+            itemsToSend= [];
+        }
+    } 
 });

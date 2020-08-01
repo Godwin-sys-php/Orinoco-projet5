@@ -3,9 +3,12 @@ window.onload= async () => {
     var allTotal = [];
     var json;
     let objProdut;
+    let allType= getAllType();
     if (cart.length == 0){
         productDiv.className="text-center";
         productDiv.innerHTML="<h6 class='text-center'>Votre panier est malheuresement vide!</h6>";
+    } else if (allType.length > 0) {
+        window.location= "index.html";
     } else {
         for (let i in cart) {
             json = JSON.parse(cart[i]);// On parse le JSON

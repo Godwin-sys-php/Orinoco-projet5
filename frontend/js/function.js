@@ -58,13 +58,13 @@ const getAllProduct = async (type) => {
         }).catch((error) => { productDiv.innerHTML = '<div class="col text-center">Une erreur a eu lieu</div>'; console.log(error); });
 };
 
-
+String.prototype.ucFirst= function(){return this.substr(0,1).toUpperCase()+this.substr(1)};
 
 const $_GET = (param) => {
     var vars = {};
     window.location.href.replace(location.hash, '').replace(
-        /[?&]+([^=&]+)=?([^&]*)?/gi, // regexp
-        function (m, key, value) { // callback
+        /[?&]+([^=&]+)=?([^&]*)?/gi, 
+        function (m, key, value) {
             vars[key] = value !== undefined ? value : '';
         }
     );
@@ -133,6 +133,16 @@ const getCart = () => {
     return toReturn;
 };
 
+const getCartIndex = () => {
+    let toReturn = [];
+    for (let index = 0; index <= localStorage.length - 1; index++) {
+        if (localStorage.key(index).substring(0, 4) == 'item') {
+            toReturn.push(localStorage.key(index));
+        }
+    }
+    return toReturn;
+};
+
 const removeDuplicates = (array) => {
     let unique = {};
     array.forEach(function (i) {
@@ -141,6 +151,32 @@ const removeDuplicates = (array) => {
         }
     });
     return Object.keys(unique);
+};
+
+const countElement = (array, element) => {
+    let a= 0;
+    for (let i in array){
+        if (array[i] == element) {
+            a++
+        }
+    }
+    return a;
+};
+
+const removeDuplicateWithName= (array, element) => {
+    let compteur= 0;
+    let i=-1;
+    while (i <= array.length) {
+        i++;
+        if (array[i] == element) {
+            if (compteur == 0) {
+                compteur= 4;
+            } else {
+                array.splice(i, 1);
+                i=-1;
+            }
+        }
+    }
 };
 
 const getTotalOfCart = () => {
@@ -154,22 +190,53 @@ const getTotalOfCart = () => {
     return total.reduce(reducer);
 };
 
-const send = async (toSend, type) => {
+const send = async (toSend, type, status) => {
     await fetch(`http://localhost:3000/api/${type}/order`, {
-        method: 'post',
-        headers: {
-            "Content-type": "application/json; charset=UTF-8"
-        },
-        body: JSON.stringify(toSend)
-    }).then(function (response) {
-        return response.json();
-    }).then(function (data) {
-        console.log(data);
-        productDiv.textContent = `Commande effectué avec succès votre numéro de commande: ${data.orderId}`;
-        form.innerHTML = '';
-        totalDiv.innerHTML = '';
-        itemsToSend = [];
+            method: 'post',
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            },
+            body: JSON.stringify(toSend)
+        })
+        .then(response => response.json())
+        .then((data) => {
+            let products= [], newProducts= [];
+            for (let i in data.products){
+                products.push(data.products[i]._id);
+            }
+            for (let index in products) {
+                let a= countElement(products, products[index]);
+                newProducts.push({ id: products[index], quantity: a });
+                if (a > 1) {
+                    removeDuplicateWithName(products, products[index]);
+                }
+            }
+            let obj= {
+                orderId: data.orderId,
+                products: newProducts
+            };
+            localStorage.setItem(`allProduct${type.ucFirst()}`, JSON.stringify(obj));
+            if (status) {
+                localStorage.setItem(`contact`, JSON.stringify(data.contact));
+                window.location= "finally.html";
+            }
+        });
+    removeAllItems();
+};
+
+const sort = (array) => {
+    let nombres= [];
+    for (let i in array){
+      let until= array[i].split('m')[1];
+      nombres.push(until);
+    }
+    nombres.sort((a, b) => {
+      return a - b;
     });
+    for (let index in nombres){
+      nombres[index]= `item${nombres[index]}`;
+    }
+    return nombres;
 };
 
 const isInt = (value) => {
@@ -183,13 +250,15 @@ const isInt = (value) => {
         return false;
     }
 };
+
 const isEmpty = (value) => {
-    if (/[A-Z]|[a-z]/.test(value)) {
+    if (/[A-Z]|[a-z]|[0-9]/.test(value)) {
         return false;
     } else {
         return true;
     }
 };
+
 const isNotAValidEmail = (mail) => {
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
         return false;
@@ -197,4 +266,61 @@ const isNotAValidEmail = (mail) => {
     else {
         return true;
     }
+};
+
+const getAllType= () => {
+    let array= ['teddies', 'cameras', 'furniture'];
+    let toReturn= [];
+    for (let index in array) {
+        if (localStorage.getItem(`allProduct${array[index].ucFirst()}`) !== null){
+            toReturn.push(array[index]);
+        }
+    }
+    return toReturn;
 }
+
+const getLastElement = (array) => {
+    let a;
+    for (let i in array){
+        a= array[i];
+    }
+    return a;
+};
+
+const removeAllItems = () => {
+    let a= getCartIndex();
+    for (let i in a){
+        localStorage.removeItem(a[i]);
+    }
+};
+
+const translator = (type) => {
+    switch (type) {
+        case 'teddies':
+            return "Oursons";
+
+        case 'cameras':
+            return "Caméras";
+
+
+        case 'furniture':
+            return "Meubles en chênes";
+    
+        default:
+            return "Erreur";
+    }
+};
+
+const countDuplicate = (array) => {
+    let indices = [];
+    let idx;
+    for (let element of array) {
+        idx = array.indexOf(element);
+        while (idx != -1) {
+            indices.push(idx);
+            idx = array.indexOf(element, idx + 1);
+        }
+    }
+
+    return indices.length;
+};
