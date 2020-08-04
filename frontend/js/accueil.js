@@ -1,1 +1,1 @@
-window.onload = getAllProduct("teddies");
+window.onload = getAllProduct("teddies");// Pour que lors du chargement de la page d'accueil, que l'un des 3 types d'articles soit afficher

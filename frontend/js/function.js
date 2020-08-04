@@ -1,10 +1,4 @@
-const getAll = () => {
-    getAllProduct("teddies");
-    getAllProduct("cameras");
-    getAllProduct("furniture");
-};
-
-const getAllProduct = async (type) => {
+const getAllProduct = async (type) => { // Une fonction pour récuperer un tout les produits d'un type précis et les afficher (utiliser dans la section accueil et produits)
     let objProdut = new Product(type, 'http://localhost:3000/api/');
     productDiv.innerHTML = '<div class="col text-center"><div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div></div>';
     objProdut.getAllProduct()
@@ -58,9 +52,11 @@ const getAllProduct = async (type) => {
         }).catch((error) => { productDiv.innerHTML = '<div class="col text-center">Une erreur a eu lieu</div>'; console.log(error); });
 };
 
-String.prototype.ucFirst= function(){return this.substr(0,1).toUpperCase()+this.substr(1)};
+String.prototype.ucFirst= () => { // Une méthode ajoutée manuellement à l'objet String
+    return this.substr(0,1).toUpperCase()+this.substr(1)
+};
 
-const $_GET = (param) => {
+const $_GET = (param) => { // Grace à un regex, il sait recupérer les paramètre URL et je l'ai appelée $_GET à la php
     var vars = {};
     window.location.href.replace(location.hash, '').replace(
         /[?&]+([^=&]+)=?([^&]*)?/gi, 
@@ -75,7 +71,7 @@ const $_GET = (param) => {
     return vars;
 };
 
-const increase = (key, price) => {
+const increase = (key, price) => { // Pour augmenter la quantité d'un article directement via le panier, l'élément se déclenche via un onClick directement mit dans le bouton
     let now= localStorage.getItem(key);
     nowInJson = JSON.parse(now);
 
@@ -91,7 +87,7 @@ const increase = (key, price) => {
     totalH3.textContent= `Total: ${getTotalOfCart()}`;
 };
 
-const decrease = (key, price) => {
+const decrease = (key, price) => { // Pour diminuer la quantité d'un article directement via le panier, l'élément se déclenche via un onClick directement mit dans le bouton
     let now= localStorage.getItem(key);
     nowInJson = JSON.parse(now);
 
@@ -112,7 +108,7 @@ const decrease = (key, price) => {
     }
 };
 
-const clean = () => {
+const clean = () => { // Pour vider le panier
     if (confirm('Voulez vous vraiment vider votre panier?')){
         let cart= getCart();
         for (let index in cart) {
@@ -123,7 +119,7 @@ const clean = () => {
     }
 };
 
-const getCart = () => {
+const getCart = () => { // Pour récuperer le panier en classant les localStorage
     let toReturn = [];
     for (let index = 0; index <= localStorage.length - 1; index++) {
         if (localStorage.key(index).substring(0, 4) == 'item') {
@@ -133,7 +129,7 @@ const getCart = () => {
     return toReturn;
 };
 
-const getCartIndex = () => {
+const getCartIndex = () => { // Pour récuperer les index du panier
     let toReturn = [];
     for (let index = 0; index <= localStorage.length - 1; index++) {
         if (localStorage.key(index).substring(0, 4) == 'item') {
@@ -143,7 +139,7 @@ const getCartIndex = () => {
     return toReturn;
 };
 
-const removeDuplicates = (array) => {
+const removeDuplicates = (array) => { // Pour supprimer les doublons dans un tableau
     let unique = {};
     array.forEach(function (i) {
         if (!unique[i]) {
@@ -153,7 +149,7 @@ const removeDuplicates = (array) => {
     return Object.keys(unique);
 };
 
-const countElement = (array, element) => {
+const countElement = (array, element) => { // Pour compter le nombre de fois qu'un élément se répète dans un tableau
     let a= 0;
     for (let i in array){
         if (array[i] == element) {
@@ -163,7 +159,7 @@ const countElement = (array, element) => {
     return a;
 };
 
-const removeDuplicateWithName= (array, element) => {
+const removeDuplicateWithName= (array, element) => { // Pour supprimer les doublons d'un élément précis dans le tableau 
     let compteur= 0;
     let i=-1;
     while (i <= array.length) {
@@ -179,7 +175,7 @@ const removeDuplicateWithName= (array, element) => {
     }
 };
 
-const getTotalOfCart = () => {
+const getTotalOfCart = () => { // Pour récuperer la valeur total du panier à l'aide d'un reducer
     let allCart = getCart();
     let total = [];
     for (let index in allCart) {
@@ -190,7 +186,7 @@ const getTotalOfCart = () => {
     return total.reduce(reducer);
 };
 
-const send = async (toSend, type, status) => {
+const send = async (toSend, type, status) => { // Pour envoyer au serveur le panier
     await fetch(`http://localhost:3000/api/${type}/order`, {
             method: 'post',
             headers: {
@@ -201,30 +197,30 @@ const send = async (toSend, type, status) => {
         .then(response => response.json())
         .then((data) => {
             let products= [], newProducts= [];
-            for (let i in data.products){
-                products.push(data.products[i]._id);
+            for (let i in data.products){// On parcours la réponse du serveur, lus précisement les produits
+                products.push(data.products[i]._id);// On mets tout les id dans un tableau
             }
-            for (let index in products) {
-                let a= countElement(products, products[index]);
-                newProducts.push({ id: products[index], quantity: a });
-                if (a > 1) {
-                    removeDuplicateWithName(products, products[index]);
+            for (let index in products) {// On parcours le tableau
+                let a= countElement(products, products[index]);// On compte le nombre de fois qu'un id se répète
+                newProducts.push({ id: products[index], quantity: a });// On mets ça dans un tableau ayant un objet avec l'id et la quantité
+                if (a > 1) { // Si il y a plus d'un produit
+                    removeDuplicateWithName(products, products[index]); // On supprime tout les autres ayant le même id
                 }
             }
             let obj= {
                 orderId: data.orderId,
                 products: newProducts
-            };
-            localStorage.setItem(`allProduct${type.ucFirst()}`, JSON.stringify(obj));
-            if (status) {
-                localStorage.setItem(`contact`, JSON.stringify(data.contact));
-                window.location= "finally.html";
+            };// On crée l'objet
+            localStorage.setItem(`allProduct${type.ucFirst()}`, JSON.stringify(obj));// Pour chaque type on crée une localStorage ayant obj
+            if (status) {// Si c'est le dernier élément: 
+                localStorage.setItem(`contact`, JSON.stringify(data.contact));// On peut set les informations du client
+                window.location= "finally.html";// Et aller vers la page de récapitulatif de la commande
             }
         });
     removeAllItems();
 };
 
-const sort = (array) => {
+const sort = (array) => { // Pour classer les élément du panier dans l'order croissant
     let nombres= [];
     for (let i in array){
       let until= array[i].split('m')[1];
@@ -239,7 +235,7 @@ const sort = (array) => {
     return nombres;
 };
 
-const isInt = (value) => {
+const isInt = (value) => { // Vérifie si un nombre est bien entier et supérieur à 0
     if ((parseFloat(value) == parseInt(value)) && !isNaN(value)) {
         if (value > 0) {
             return true;
@@ -251,7 +247,7 @@ const isInt = (value) => {
     }
 };
 
-const isEmpty = (value) => {
+const isEmpty = (value) => { // Vérifie si un champs est vide via un regex
     if (/[A-Z]|[a-z]|[0-9]/.test(value)) {
         return false;
     } else {
@@ -259,7 +255,7 @@ const isEmpty = (value) => {
     }
 };
 
-const isNotAValidEmail = (mail) => {
+const isNotAValidEmail = (mail) => { // Vérifie si une adresse email est correct via un regex
     if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
         return false;
     }
@@ -268,7 +264,7 @@ const isNotAValidEmail = (mail) => {
     }
 };
 
-const getAllType= () => {
+const getAllType= () => { // Récupère toute les localStorage créer lors de la réponse du serveur
     let array= ['teddies', 'cameras', 'furniture'];
     let toReturn= [];
     for (let index in array) {
@@ -279,7 +275,7 @@ const getAllType= () => {
     return toReturn;
 }
 
-const getLastElement = (array) => {
+const getLastElement = (array) => { // Récupère le dernier élément d'un tableau 
     let a;
     for (let i in array){
         a= array[i];
@@ -287,14 +283,14 @@ const getLastElement = (array) => {
     return a;
 };
 
-const removeAllItems = () => {
+const removeAllItems = () => {// Vide le panier
     let a= getCartIndex();
     for (let i in a){
         localStorage.removeItem(a[i]);
     }
 };
 
-const translator = (type) => {
+const translator = (type) => { // Traduit en français les type en anglais (teddies=>ourson)
     switch (type) {
         case 'teddies':
             return "Oursons";
@@ -309,18 +305,4 @@ const translator = (type) => {
         default:
             return "Erreur";
     }
-};
-
-const countDuplicate = (array) => {
-    let indices = [];
-    let idx;
-    for (let element of array) {
-        idx = array.indexOf(element);
-        while (idx != -1) {
-            indices.push(idx);
-            idx = array.indexOf(element, idx + 1);
-        }
-    }
-
-    return indices.length;
 };
