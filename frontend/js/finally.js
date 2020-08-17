@@ -17,7 +17,7 @@ window.onload= async () => { //Lors du chargement de la page, on execute cette f
         for (let i in allType){ // On parcours tout les types
 
             total=[];// On vide le tableau total
-            let allItem= localStorage.getItem(`allProduct${allType[i].ucFirst()}`);// On récupère la localStorage du type visé
+            let allItem = localStorage.getItem(`allProduct${ucFirst(allType[i])}`);// On récupère la localStorage du type visé
             let inJSON= JSON.parse(allItem);// On parse la localStorage
             
             let inFrench= translator(allType[i]);// On traduit en français ex: "teddies"=>"Oursons"

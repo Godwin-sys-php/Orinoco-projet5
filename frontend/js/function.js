@@ -52,15 +52,19 @@ const getAllProduct = async (type) => { // Une fonction pour récuperer un tout 
         }).catch((error) => { productDiv.innerHTML = '<div class="col text-center">Une erreur a eu lieu</div>'; console.log(error); });
 };
 
-String.prototype.ucFirst= () => { // Une méthode ajoutée manuellement à l'objet String
-    return this.substr(0,1).toUpperCase()+this.substr(1)
+const ucFirst = (str) => {
+    if (str.length > 0) {
+        return str[0].toUpperCase() + str.substring(1);
+    } else {
+        return str;
+    }
 };
 
-const $_GET = (param) => { // Grace à un regex, il sait recupérer les paramètre URL et je l'ai appelée $_GET à la php
-    var vars = {};
+const $_GET = (param) => { // Grace à un regex, il arrive à recupérer les paramètre URL et je l'ai appelée $_GET à la php
+    let vars = {};
     window.location.href.replace(location.hash, '').replace(
         /[?&]+([^=&]+)=?([^&]*)?/gi, 
-        function (m, key, value) {
+         (m, key, value) => {
             vars[key] = value !== undefined ? value : '';
         }
     );
@@ -211,7 +215,7 @@ const send = async (toSend, type, status) => { // Pour envoyer au serveur le pan
                 orderId: data.orderId,
                 products: newProducts
             };// On crée l'objet
-            localStorage.setItem(`allProduct${type.ucFirst()}`, JSON.stringify(obj));// Pour chaque type on crée une localStorage ayant obj
+            localStorage.setItem(`allProduct${ucFirst(type)}`, JSON.stringify(obj));// Pour chaque type on crée une localStorage ayant obj
             if (status) {// Si c'est le dernier élément: 
                 localStorage.setItem(`contact`, JSON.stringify(data.contact));// On peut set les informations du client
                 window.location= "finally.html";// Et aller vers la page de récapitulatif de la commande
@@ -268,7 +272,7 @@ const getAllType= () => { // Récupère toute les localStorage créer lors de la
     let array= ['teddies', 'cameras', 'furniture'];
     let toReturn= [];
     for (let index in array) {
-        if (localStorage.getItem(`allProduct${array[index].ucFirst()}`) !== null){
+        if (localStorage.getItem(`allProduct${ucFirst(array[index])}`) !== null){
             toReturn.push(array[index]);
         }
     }
