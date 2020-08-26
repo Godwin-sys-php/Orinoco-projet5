@@ -11,6 +11,8 @@ Vous clonez le projet sur votre ordinateur, vous vous placez dedans via le termi
 
 Et à chaque fois que vous voulez démarrer le serveur vous faites `npm start` ou `node server` ou `nodemon server.js`. Le serveur devrait démarrer sur le port `3000` (`localhost:3000`), si ce dernier est occupé par une autre application **faites tout pour qu'il run sur le port 3000**.
 
+**LE FRONTEND DÉPEND DU BACKEND(DU SERVEUR) DONC VEILLEZ À CE QUE LE SERVEUR SOIT DÉMARRÉ AVANT D'UTILISER L'APPLICATION**
+
 ## Utilisation
 J'ai établi un plan de test **très détaillé** disponible à [cette adresse](https://docs.google.com/document/d/1NpnYthwatIhq4KClrsPLw8_f2cbJOuKbUWZ5GXqj3-o/edit?usp=sharing)
 
