@@ -88,7 +88,7 @@ const increase = (key, price) => { // Pour augmenter la quantité d'un article d
     document.getElementById(`quantity_${key}`).textContent= `Pièces: ${nowInJson.quantity}`;
     document.getElementById(`total${key}`).textContent= `Total: ${nowInJson.total}¢`;
 
-    totalH3.textContent= `Total: ${getTotalOfCart()}`;
+    totalH3.textContent= `Total: ${getTotalOfCart()}¢`;
 };
 
 const decrease = (key, price) => { // Pour diminuer la quantité d'un article directement via le panier, l'élément se déclenche via un onClick directement mit dans le bouton
@@ -105,7 +105,7 @@ const decrease = (key, price) => { // Pour diminuer la quantité d'un article di
         document.getElementById(`quantity_${key}`).textContent= `Pièces: ${nowInJson.quantity}`;
         document.getElementById(`total${key}`).textContent= `Total: ${nowInJson.total}¢`;
 
-        totalH3.textContent= `Total: ${getTotalOfCart()}`;
+        totalH3.textContent= `Total: ${getTotalOfCart()}¢`;
     } else {
         localStorage.removeItem(key);
         window.location.reload();
@@ -204,10 +204,10 @@ const send = async (toSend, type, status) => { // Pour envoyer au serveur le pan
             for (let i in data.products){// On parcours la réponse du serveur, lus précisement les produits
                 products.push(data.products[i]._id);// On mets tout les id dans un tableau
             }
-            for (let index in products) {// On parcours le tableau
+            for (let index in products) {// On parcours le tableau des id
                 let a= countElement(products, products[index]);// On compte le nombre de fois qu'un id se répète
                 newProducts.push({ id: products[index], quantity: a });// On mets ça dans un tableau ayant un objet avec l'id et la quantité
-                if (a > 1) { // Si il y a plus d'un produit
+                if (a >= 1) { // Si il y a un produit et plus
                     removeDuplicateWithName(products, products[index]); // On supprime tout les autres ayant le même id
                 }
             }
@@ -221,7 +221,6 @@ const send = async (toSend, type, status) => { // Pour envoyer au serveur le pan
                 window.location= "finally.html";// Et aller vers la page de récapitulatif de la commande
             }
         });
-    removeAllItems();
 };
 
 const sort = (array) => { // Pour classer les élément du panier dans l'order croissant
