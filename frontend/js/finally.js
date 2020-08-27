@@ -82,7 +82,7 @@ window.onload= async () => { //Lors du chargement de la page, on execute cette f
         }
         let generalTotal= allTotal.reduce(reducer);// On le réduit...
         productDiv.innerHTML+= `<br /><h3 class="text-center">Merci d'avoir acheté chez Orninoco <br />Total général: ${toEuro(generalTotal)}€</h3>`;// ...et on l'affiche
-        //localStorage.clear();
+        localStorage.clear();
     } else {// Sinon on fait une redirection
         window.location= "index.html";
     }
