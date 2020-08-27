@@ -30,7 +30,7 @@ const getAllProduct = async (type) => { // Une fonction pour récuperer un tout 
                 p.innerHTML = data[i].description;
 
                 small.className = "text-muted";
-                small.innerHTML = "Prix: " + data[i].price + "¢";
+                small.innerHTML = "Prix: " + toEuro(data[i].price) + "€";
 
                 a.href = `parameter.html?id=${data[i]._id}&type=${type}`;
 
@@ -75,6 +75,10 @@ const $_GET = (param) => { // Grace à un regex, il arrive à recupérer les par
     return vars;
 };
 
+const toEuro = (centime) => {
+    return parseInt(centime) / 100;
+}
+
 const increase = (key, price) => { // Pour augmenter la quantité d'un article directement via le panier, l'élément se déclenche via un onClick directement mit dans le bouton
     let now= localStorage.getItem(key);
     nowInJson = JSON.parse(now);
@@ -86,9 +90,9 @@ const increase = (key, price) => { // Pour augmenter la quantité d'un article d
     localStorage.setItem(key, JSON.stringify(nowInJson));
 
     document.getElementById(`quantity_${key}`).textContent= `Pièces: ${nowInJson.quantity}`;
-    document.getElementById(`total${key}`).textContent= `Total: ${nowInJson.total}¢`;
+    document.getElementById(`total${key}`).textContent= `Total: ${toEuro(nowInJson.total)}€`;
 
-    totalH3.textContent= `Total: ${getTotalOfCart()}¢`;
+    totalH3.textContent= `Total: ${toEuro(getTotalOfCart())}€`;
 };
 
 const decrease = (key, price) => { // Pour diminuer la quantité d'un article directement via le panier, l'élément se déclenche via un onClick directement mit dans le bouton
@@ -103,9 +107,9 @@ const decrease = (key, price) => { // Pour diminuer la quantité d'un article di
         localStorage.setItem(key, JSON.stringify(nowInJson));
 
         document.getElementById(`quantity_${key}`).textContent= `Pièces: ${nowInJson.quantity}`;
-        document.getElementById(`total${key}`).textContent= `Total: ${nowInJson.total}¢`;
+        document.getElementById(`total${key}`).textContent= `Total: ${toEuro(nowInJson.total)}€`;
 
-        totalH3.textContent= `Total: ${getTotalOfCart()}¢`;
+        totalH3.textContent= `Total: ${toEuro(getTotalOfCart())}€`;
     } else {
         localStorage.removeItem(key);
         window.location.reload();
@@ -163,10 +167,10 @@ const countElement = (array, element) => { // Pour compter le nombre de fois qu'
     return a;
 };
 
-const removeDuplicateWithName= (array, element) => { // Pour supprimer les doublons d'un élément précis dans le tableau 
+const removeDuplicateWithName = (array, element) => { // Pour supprimer les doublons d'un élément précis dans le tableau 
     let compteur= 0;
     let i=-1;
-    while (i <= array.length) {
+    while (i <= array.length-1) {
         i++;
         if (array[i] == element) {
             if (compteur == 0) {
@@ -198,22 +202,30 @@ const send = async (toSend, type, status) => { // Pour envoyer au serveur le pan
             },
             body: JSON.stringify(toSend)
         })
-        .then(response => response.json())
+        .then(await ((response) => response.json()))
         .then((data) => {
             let products= [], newProducts= [];
             for (let i in data.products){// On parcours la réponse du serveur, lus précisement les produits
                 products.push(data.products[i]._id);// On mets tout les id dans un tableau
             }
+
             for (let index in products) {// On parcours le tableau des id
                 let a= countElement(products, products[index]);// On compte le nombre de fois qu'un id se répète
                 newProducts.push({ id: products[index], quantity: a });// On mets ça dans un tableau ayant un objet avec l'id et la quantité
-                if (a >= 1) { // Si il y a un produit et plus
-                    removeDuplicateWithName(products, products[index]); // On supprime tout les autres ayant le même id
-                }
             }
+
+            const filteredArr = newProducts.reduce((acc, current) => { // On supprimme toutes les répétitions
+              const x = acc.find((item) => item.id === current.id);
+              if (!x) {
+                return acc.concat([current]);
+              } else {
+                return acc;
+              }
+            }, []);
+
             let obj= {
                 orderId: data.orderId,
-                products: newProducts
+                products: filteredArr
             };// On crée l'objet
             localStorage.setItem(`allProduct${ucFirst(type)}`, JSON.stringify(obj));// Pour chaque type on crée une localStorage ayant obj
             if (status) {// Si c'est le dernier élément: 

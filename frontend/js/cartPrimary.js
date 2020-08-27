@@ -37,7 +37,7 @@ window.onload= async () => { //La fonction est asynchrone pour permettre l'ajout
                     img.src = data.imageUrl;
                     h5.textContent = data.name;
                     img.width = 150;
-                    p.innerHTML = `${data.description}<br /><small class="text-muted">${json.customTxt} ${json.custom}</small><br /><small class="text-muted" id="total${json.key}">Total: ${json.total}¢</small><br /><small class="text-muted">Prix: ${data.price}¢</small><br /><small class="text-muted" id="quantity_${json.key}">Pièces: ${json.quantity}</small><br /><button class="btn btn-danger btn-sm" onclick="decrease(\'${json.key}\', ${data.price});"> - </button> <button class="btn btn-primary btn-sm" onclick="increase(\'${json.key}\', ${data.price});"> + </button><br /><br /><button class="btn btn-danger btn-block" onclick="localStorage.removeItem(\'${json.key}\');window.location.reload();">Retirer</button>`;
+                    p.innerHTML = `${data.description}<br /><small class="text-muted" id="total${json.key}">Total: ${toEuro(json.total)}€</small><br /><small class="text-muted">Prix: ${toEuro(data.price)}€</small><br /><small class="text-muted" id="quantity_${json.key}">Pièces: ${json.quantity}</small><br /><button class="btn btn-danger btn-sm" onclick="decrease(\'${json.key}\', ${data.price});"> - </button> <button class="btn btn-primary btn-sm" onclick="increase(\'${json.key}\', ${data.price});"> + </button><br /><br /><button class="btn btn-danger btn-block" onclick="localStorage.removeItem(\'${json.key}\');window.location.reload();">Retirer</button>`;
                 }).catch(error => { productDiv.textContent = "Une erreur a eu lieu"; });
 
             h5.className = "card-title";
@@ -50,7 +50,7 @@ window.onload= async () => { //La fonction est asynchrone pour permettre l'ajout
             divCardBody.appendChild(h5);
             divCardBody.appendChild(p);
             if (i == cart.length - 1) { //Et lorsqu'on arrive à la fin, on affiche le total
-                totalDiv.innerHTML = `<br /><h3 class="text-center" id="totalH3">Total: ${getTotalOfCart()}¢</h3><br /><button class="btn btn-warning btn-block btn-lg" onclick="clean();">Vider le panier</button><button class="btn btn-success btn-block btn-lg" onclick="document.getElementsByClassName(\'d-none\')[0].className=\'visible\';this.className=\'d-none\';">Passer la commande</button>`;
+                totalDiv.innerHTML = `<br /><h3 class="text-center" id="totalH3">Total: ${toEuro(getTotalOfCart())}€</h3><br /><button class="btn btn-warning btn-block btn-lg" onclick="clean();">Vider le panier</button><button class="btn btn-success btn-block btn-lg" onclick="document.getElementsByClassName(\'d-none\')[0].className=\'visible\';this.className=\'d-none\';">Passer la commande</button>`;
             }
         }
     }

@@ -59,7 +59,7 @@ window.onload= async () => { //Lors du chargement de la page, on execute cette f
                         img.src = data.imageUrl;
                         h5.textContent = data.name;
                         img.width = 150;
-                        p.innerHTML = `${data.description}<br /><small class="text-muted">Total: ${data.price*inJSON.products[a].quantity}¢</small><br /><small class="text-muted">Prix: ${data.price}¢</small><br /><small class="text-muted">Pièces: ${inJSON.products[a].quantity/*La quantité était stocké dans le tableau structure: [{ id: 1, quantity: 5 }, { id: 2, quantity: 6 }]*/}</small>`;
+                        p.innerHTML = `${data.description}<br /><small class="text-muted">Total: ${toEuro(data.price*inJSON.products[a].quantity)}€</small><br /><small class="text-muted">Prix: ${toEuro(data.price)}€</small><br /><small class="text-muted">Pièces: ${inJSON.products[a].quantity/*La quantité était stocké dans le tableau structure: [{ id: 1, quantity: 5 }, { id: 2, quantity: 6 }]*/}</small>`;
                         total.push(data.price*inJSON.products[a].quantity);// On ajoute au tableau des totaux le total de l'article
                         
                     }).catch(error => { productDiv.textContent = "Une erreur a eu lieu"; });
@@ -77,12 +77,12 @@ window.onload= async () => { //Lors du chargement de la page, on execute cette f
 
             // À la fin on affiche le tableau des totaux reduit avec tout les éléments additionner
             let newTotal= total.reduce(reducer);
-            productDiv.innerHTML+= `<h4 class="text-center">Total: ${newTotal}¢</h4>`;
+            productDiv.innerHTML+= `<h4 class="text-center">Total: ${toEuro(newTotal)}€</h4>`;
             allTotal.push(newTotal);// On push vers total général
         }
         let generalTotal= allTotal.reduce(reducer);// On le réduit...
-        productDiv.innerHTML+= `<br /><h3 class="text-center">Merci d'avoir acheté chez Orninoco <br />Total général: ${generalTotal}¢</h3>`;// ...et on l'affiche
-        localStorage.clear();
+        productDiv.innerHTML+= `<br /><h3 class="text-center">Merci d'avoir acheté chez Orninoco <br />Total général: ${toEuro(generalTotal)}€</h3>`;// ...et on l'affiche
+        //localStorage.clear();
     } else {// Sinon on fait une redirection
         window.location= "index.html";
     }

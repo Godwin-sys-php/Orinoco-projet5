@@ -14,7 +14,7 @@ objProduct.getProductWithId($_GET('id'))// On récupère les informations d'un p
         document.getElementsByClassName('image')[0].src = data.imageUrl;
         nameOfProduct.textContent = data.name;
         description.textContent = data.description;
-        price.innerHTML = data.price + "¢";
+        price.innerHTML = toEuro(data.price) + "€";
         switch ($_GET('type')) {
             case "teddies":
                 perso = data.colors;// Les possibilités de personnalisation
@@ -55,8 +55,6 @@ addToCart.addEventListener('click', () => { // Lorsque l'on clique sur le bouton
                         key: `item${a}`,// La clé
                         id: $_GET('id'),// L'id
                         type: $_GET('type'),// Le type (teddies, caméras, furnitures)
-                        custom: custom.value,// La personalisation
-                        customTxt: customTxt,// Le type de personnalisation (couleur, couleur du verni ou lentille)
                         quantity: quantity.value,// La quantité
                         total: data.price * quantity.value// Le total
                     }
@@ -79,7 +77,6 @@ addToCart.addEventListener('click', () => { // Lorsque l'on clique sur le bouton
                     if (verif == false) { // Si verif = false
                         let newItem = localStorage.getItem(capture);// On récupère l'élément capturer
                         newItem = JSON.parse(newItem);// On parse le JSON
-                        newItem.custom = custom.value;// On change juste la valeur de la personnalisation...
                         newItem.quantity = parseInt(newItem.quantity, 10) + parseInt(quantity.value, 10);// ...la quantité...
                         newItem.total = newItem.quantity * data.price;// ...et le total...
 

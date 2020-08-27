@@ -11,24 +11,24 @@ btnSubmit.addEventListener('click', async (event) => { //Lorsqu'on va cliqué su
     itemsToSend = [];
     
     //On récupère les infomations du client
-    var nom= firstName.value,
-    prenom= lastName.value,
-    adresse= adress.value,
-    ville= city.value,
-    mail= email.value;
+    var nom= firstName.value.trim(),
+    prenom= lastName.value.trim(),
+    adresse= adress.value.trim(),
+    ville= city.value.trim(),
+    mail= email.value.trim();
 
     let verification= false;// Une variable qui dira si oui ou non le formulaire est correcte
     let allInput= [firstName, lastName, adress, city, email];// Pour se faciliter la tache, on mets dans les éléments dans un tableau 
     for (let input = 0; input <= 4; input++) {// On parcours le tableau
         if (input == 4) {// On fait un traitement uniquement pour l'email
-            if (isNotAValidEmail(allInput[input].value)) {    
+            if (isNotAValidEmail(allInput[input].value.trim())) {    
                 verification = true;
                 allInput[input].className = 'form-control is-invalid';
             } else {
                 allInput[input].className = 'form-control is-valid';
             }
         } else {
-            if (isEmpty(allInput[input].value)) {// Si le champs est vide...
+            if (isEmpty(allInput[input].value.trim()) || allInput[input].value.trim().length < 2 || !isNotAValidEmail(allInput[input].value.trim()) || parseInt(allInput[input].value.trim()) || parseFloat(allInput[input].value.trim())) {// Si le champs est vide...
                 verification = true;
                 allInput[input].className = 'form-control is-invalid';
             } else {
